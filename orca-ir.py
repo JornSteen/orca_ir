@@ -252,8 +252,8 @@ params.set_size_inches((plSize[0]*N, plSize[1]*N))
 #save the plot
 if save_spectrum:
     filename, file_extension = os.path.splitext(args.filename)
-    plt.savefig(f"{filename}-ir.png", dpi=figure_dpi)
-    plt.savefig(f"{filename}-ir.svg", dpi=figure_dpi)
+    plt.savefig(f"{filename}-IR.png", dpi=figure_dpi)
+    plt.savefig(f"{filename}-IR.svg", dpi=figure_dpi)
 
 #export data
 if export_spectrum:
