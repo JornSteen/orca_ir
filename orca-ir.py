@@ -21,24 +21,30 @@ w = 15                                  #w = line width for broadening, FWHM
 wn_add = 150                            #add +150 to spectra x (required for convolution)
 export_delim = " "                      #delimiter for data export
 
+colours = ["#000000","#808080","#346aa9","#7dadce","#e16203","#872f17"]
+
 # plot config section - configure here
 high_to_low_wn = True                   #go from high to low wave number, normal for IR spectra, low wn to high wn if False
-transm_style = True                     #show spectra in transmittance style, absorption style if False
+transm_style = False                     #show spectra in transmittance style, absorption style if False
 show_grid = True                        #show grid if True
 show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not be shown)
 show_sticks = True                      #show the stick spectra if True
 show_single_gauss = False               #show single gauss functions if True
 show_single_gauss_area = False          #show single gauss functions - area plot if True
-label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absorption style 
+
+if transm_style == True:
+    label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absorption style 
+elif transm_style -- False:
+    label_rel_pos_y = 5                   #-15 for transmittance style, 5 for absorption style 
 save_spectrum = True                    #save spectrum if True
 show_spectrum = False                   #show the matplotlib window if True
 label_peaks = True                      #show peak labels if True
 minor_ticks = True                      #show minor ticks if True
-linear_locator = True                   #tick locations at the beginning and end of the spectrum x-axis, evenly spaced
-spectrum_title = "IR spectrum"          #title
+linear_locator = False                   #tick locations at the beginning and end of the spectrum x-axis, evenly spaced
+spectrum_title = ""                     #title: None
 spectrum_title_weight = "bold"          #weight of the title font: 'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'
-y_label_trans = "transmittance"         #label of the y axis - Transmittance
-y_label_abs = "intensity"               #label of y-axis - Absorption
+y_label_trans = "Transmittance"         #default label of the y axis - None
+y_label_abs = "Intensity"               #label of y-axis - Absorption
 x_label = r'$\tilde{\nu}$ /cm$^{-1}$'   #label of the x-axis
 normalize_export = True                 #normalize y values for export, max y value becomes unity
 normalize_factor = 100                  #factor for normalization, e.g. 100 ranges from 0 to max y = 100 
@@ -130,7 +136,7 @@ try:
                     #only recognize lines that start with number
                     #split line into 3 lists mode, frequencies, intensities
                     #line should start with a number
-                    if re.search("\d:",line): 
+                    if re.search(r"\d:",line): 
                         modelist.append(int(line.strip().split(":")[0])) 
                         freqlist.append(float(line.strip().split()[1]))
                         intenslist.append(float(line.strip().split()[intens_column]))
@@ -174,7 +180,10 @@ if show_conv_spectrum:
 
 #plot sticks
 if show_sticks:
-    ax.stem(freqlist,intenslist,linefmt="dimgrey",markerfmt=" ",basefmt=" ")
+    # ax2 = ax.twinx() ##!!! add second axis, change colour yaxis, etc.
+    ax.stem(freqlist,intenslist,linefmt=colours[2],markerfmt=colours[2],basefmt=" ")
+
+
 
 #optional mark peaks - uncomment in case
 #ax.plot(peaks,plt_range_gauss_sum_y[peaks],"|")
@@ -244,6 +253,7 @@ params.set_size_inches((plSize[0]*N, plSize[1]*N))
 if save_spectrum:
     filename, file_extension = os.path.splitext(args.filename)
     plt.savefig(f"{filename}-ir.png", dpi=figure_dpi)
+    plt.savefig(f"{filename}-ir.svg", dpi=figure_dpi)
 
 #export data
 if export_spectrum:
